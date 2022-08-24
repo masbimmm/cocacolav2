@@ -3,7 +3,7 @@
 ### 🛠 Install BOT
 
 ```
-git clone https://github.com/Plasmonix/Netflixer
+git clone https://github.com/masbimmm/cocacolav2
 cd copcacolav2
 pip install -r requirements.txt
 ```
