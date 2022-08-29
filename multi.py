@@ -27,6 +27,11 @@ import random
 import threading
 import time
 
+#idm-frestea-9-18 indomaret freshtea
+#sat-frestea-9-18 alfa freshtea
+#idm-coke-ayo-9-06 indomaret cocacola
+
+uri = 'idm-coke-ayo-9-06' #alfamart cocacola
 thread = 2
 empas = [
 "rosene.kauppi@niatniat.site|Admin123", 
@@ -37,22 +42,6 @@ empas = [
 "sheelagh.mozelle@niatniat.site|Admin123", 
 "misha.ophelia@niatniat.site|Admin123", 
 "correy.whittaker@niatniat.site|Admin123", 
-"brietta.regan@niatniat.site|Admin123", 
-"dominga.hamil@niatniat.site|Admin123", 
-"melodie.taima@niatniat.site|Admin123", 
-"maurene.fulmer@niatniat.site|Admin123", 
-"elvira.alwin@niatniat.site|Admin123", 
-"gilda.borrell@niatniat.site|Admin123", 
-"vita.jehu@niatniat.site|Admin123", 
-"sallie.regan@niatniat.site|Admin123", 
-"antonietta.dalli@niatniat.site|Admin123", 
-"stevana.shelba@niatniat.site|Admin123", 
-"sharai.quinn@niatniat.site|Admin123", 
-"dania.joeann@niatniat.site|Admin123", 
-"anica.aaberg@niatniat.site|Admin123", 
-"nyssa.ludewig@niatniat.site|Admin123", 
-"wileen.buffum@niatniat.site|Admin123", 
-"ivett.byrne@niatniat.site|Admin123"
 ]
 
 
@@ -75,7 +64,7 @@ def worker(c,ind, user):
   time.sleep(0.5)
   print("[PREPARING] "+user)
   lists = user.split('|')
-  email = lists[0]
+  email = lists[0].lower()
   password = lists[1]
   options = uc.ChromeOptions()
   # options.add_experimental_option("prefs", prefs)
@@ -94,22 +83,8 @@ def worker(c,ind, user):
   driver.set_window_position(ind, 0)
   wait = WebDriverWait(driver, 20)
   wait3s = WebDriverWait(driver, 3)
-  driver.get('https://ayo.coca-cola.co.id/login/sat-coke-ayo-9-60')
+  driver.get("https://admin.google.com")
   main_page = driver.current_window_handle
-  wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]')))
-  try:
-    driver.find_element(By.XPATH, "//*[contains(text(),'Accept all')]").click()
-    print("oke")
-    time.sleep(2)
-  except:
-    print("err")
-
-  wait.until(EC.visibility_of_element_located((By.XPATH, "//span[contains(text(),'Google')]"))).click()
-  for handle in driver.window_handles:
-    if handle != main_page:
-       login_page = handle
-  driver.switch_to.window(login_page)
-  time.sleep(3)
   driver.set_window_position(ind, 0)
   inputmail = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@type ="email"]')))
   inputmail.send_keys(email)
@@ -138,24 +113,34 @@ def worker(c,ind, user):
           print("OTP CUK")
           driver.quit()
         except:
-          print("Wait redirected")
+          try:
+            wait3s.until(EC.visibility_of_element_located((By.XPATH, '//input[@id="confirm"]'))).click()
+          except:
+            print("Wait redirected")
 
-  driver.switch_to.window(main_page)
-  driver.get('https://ayo.coca-cola.co.id/login/sat-coke-ayo-9-60')
+  driver.get('https://ayo.coca-cola.co.id/login/'+uri)
+  wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]')))
+  try:
+    driver.find_element(By.XPATH, "//*[contains(text(),'Accept all')]").click()
+    print("oke")
+    time.sleep(2)
+  except:
+    print("err")
+  
   wait.until(EC.visibility_of_element_located((By.XPATH, "//span[contains(text(),'Google')]"))).click()
   for handle in driver.window_handles:
     if handle != main_page:
-       login_page = handle
-  driver.switch_to.window(login_page)
+      login_page = handle
+      driver.switch_to.window(login_page)
 
   try:
-    time.sleep(3)
+    time.sleep(0.5)
     driver.set_window_position(ind, 0)
     wait.until(EC.visibility_of_element_located((By.XPATH, '//div[@data-email="'+email+'"]'))).click()
     print("login ulang")
     driver.switch_to.window(main_page)
     try:
-      wait.until(EC.url_to_be('https://ayo.coca-cola.co.id/c/sat-coke-ayo-9-60'))
+      wait.until(EC.url_to_be('https://ayo.coca-cola.co.id/c/'+uri))
       print("udah kelogin")
       wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]//span[contains(text(),"Allow")]'))).click()
       wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")][contains(text(), "Klaim")]'))).click()
@@ -184,7 +169,11 @@ def worker(c,ind, user):
           driver.find_element(By.XPATH, '//div[@class="flex-container"]').screenshot(barcode+".png")
 
       except:
-        print("gagal klik redeem")
+        try:
+          err = driver.find_element(By.XPATH, '//div[@class="box"]//div//p').text
+          print(err)
+        except:
+          print("err 303")
     except:
       print("gagal login")
   except:
