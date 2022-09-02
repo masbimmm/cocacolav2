@@ -7,8 +7,8 @@
 # | \____) |       _| |_\   |_  _| |_.' /_| |  \ \_  _/ /   \ \_
 #  \______.'         |_____|\____||______.'|____| |___||____| |____|
 #            Grivy Bot claim with selenium
-#                            By Masbim
-#               Created on Sun Ags 21 21:35:31 2020
+#                            By Masbim & Recode By PandaEver
+#               Recode on Friday September 02 17:10:14 2022
 #
 #  Powered By :
 #  I-WRAH Tools & T-PhuTe x & X-ReRe Scripts
@@ -31,8 +31,8 @@ import time
 #sat-frestea-9-18 alfa freshtea
 #idm-coke-ayo-9-06 indomaret cocacola
 
-uri = 'idm-coke-ayo-9-06' #alfamart cocacola
-thread = 2
+uri = 'sat-coke-ayo-9-60' #alfamart cocacola
+thread = 4
 empas = [
 "rosene.kauppi@niatniat.site|Admin123", 
 "valera.reidar@niatniat.site|Admin123", 
@@ -67,18 +67,18 @@ def worker(c,ind, user):
   email = lists[0].lower()
   password = lists[1]
   options = uc.ChromeOptions()
-  # options.add_experimental_option("prefs", prefs)
+  #options.add_experimental_option("prefs", prefs)
   options.add_experimental_option("prefs", { "profile.default_content_setting_values.geolocation": 2})
   options.add_argument('--disable-notifications')
+  options.add_argument('--incognito')
   options.add_argument('--no-sandbox')
+  #options.add_argument('--headless')
   options.add_argument("--disable-dev-shm-usage")
   options.add_argument("--disable-blink-features")
   options.add_argument("--disable-blink-features=AutomationControlled")
   options.add_argument("--disable-infobars")
-
   options.add_argument("--remote-debugging-port=9222")
-
-  driver = uc.Chrome(use_subprocess=True, options=options)
+  driver =  uc.Chrome(driver_executable_path="chromedriver.exe",use_subprocess=True, options=options)
   driver.set_window_size(300, 800)
   driver.set_window_position(ind, 0)
   wait = WebDriverWait(driver, 20)
@@ -102,7 +102,7 @@ def worker(c,ind, user):
       print("ene captchaimg")
       driver.quit()
     except:
-      print("check account mbut")
+      print("check account Mbut")
       try:
         driver.find_element(By.XPATH,  '//input[@type="password"][@aria-invalid="true"]')
         print("passwordnya salah cuk")
@@ -117,12 +117,10 @@ def worker(c,ind, user):
             wait3s.until(EC.visibility_of_element_located((By.XPATH, '//input[@id="confirm"]'))).click()
           except:
             print("Wait redirected")
-
   driver.get('https://ayo.coca-cola.co.id/login/'+uri)
   wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]')))
   try:
-    driver.find_element(By.XPATH, "//*[contains(text(),'Accept all')]").click()
-    print("oke")
+    driver.find_element(By.XPATH, "//*[contains(text(),'Accept all') or contains(text(),'Terima semua')]").click()
     time.sleep(2)
   except:
     print("err")
@@ -142,10 +140,10 @@ def worker(c,ind, user):
     try:
       wait.until(EC.url_to_be('https://ayo.coca-cola.co.id/c/'+uri))
       print("udah kelogin")
-      wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]//span[contains(text(),"Allow")]'))).click()
-      wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")][contains(text(), "Klaim")]'))).click()
-
-      status = False
+      wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]//span[contains(text(),"Izinkan") or contains(text(),"Allow")]'))).click()
+      wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]')))
+      driver.find_element(By.XPATH, "//*[contains(text(),'Claim') or contains(text(),'Klaim')]").click()
+      status = True
       try:
         wait.until(EC.visibility_of_element_located((By.XPATH, '//button[contains(@style,"background-color: rgb(0, 0, 0)")]//span[contains(text(), "Redeem")]'))).click()
         try:
@@ -161,7 +159,6 @@ def worker(c,ind, user):
             status = True
           except:
             print("udah pernah claim mungkin akunnya")
-        
         time.sleep(2)
         if(status==True):
           barcode = driver.find_element(By.XPATH, '//p[@class="barcode-value"]').text
